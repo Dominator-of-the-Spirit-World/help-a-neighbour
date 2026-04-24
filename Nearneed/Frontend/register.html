@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Create Account — NearNeed</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --ocean:#2772A0;--ocean-d:#1e5f8a;--ocean-l:#4a9fd4;
+  --sky:#cfe8f5;--sky2:#dff0fa;--sky3:#eef7fc;
+  --white:#fff;--text:#1b2e3c;--text2:#47647a;--muted:#8aafc5;
+  --border:#c8e0ef;--green:#1a9e5c;--green2:#eaf7f1;--red:#d63131;
+}
+body{font-family:'DM Sans',sans-serif;background:linear-gradient(145deg,var(--sky3),var(--sky2),var(--sky));min-height:100vh;display:flex;flex-direction:column;}
+
+/* ── NAV ── */
+.mini-nav{height:56px;background:white;border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;box-shadow:0 1px 8px rgba(39,114,160,0.08);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.logo-box{width:32px;height:32px;background:var(--ocean);border-radius:8px;display:flex;align-items:center;justify-content:center;}
+.logo-box svg{width:18px;height:18px;fill:white;}
+.logo-nm{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;color:var(--text);}
+.mini-nav-right{margin-left:auto;font-size:13px;color:var(--text2);}
+.mini-nav-right a{color:var(--ocean);font-weight:600;text-decoration:none;}
+.mini-nav-right a:hover{text-decoration:underline;}
+
+/* ── STEPS ── */
+.steps-bar{background:white;border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:center;gap:0;}
+.step{display:flex;align-items:center;gap:8px;}
+.step-circle{
+  width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Sora',sans-serif;font-size:13px;font-weight:700;
+  border:2px solid var(--border);color:var(--muted);background:white;
+  transition:all .3s;flex-shrink:0;
+}
+.step.done .step-circle{background:var(--green);border-color:var(--green);color:white;}
+.step.active .step-circle{background:var(--ocean);border-color:var(--ocean);color:white;}
+.step-label{font-size:12.5px;font-weight:600;color:var(--muted);}
+.step.active .step-label{color:var(--ocean);}
+.step.done .step-label{color:var(--green);}
+.step-line{width:40px;height:2px;background:var(--border);margin:0 4px;transition:background .3s;flex-shrink:0;}
+.step-line.done{background:var(--green);}
+
+/* ── LAYOUT ── */
+.reg-wrap{flex:1;display:flex;align-items:flex-start;justify-content:center;padding:32px 24px 48px;}
+.reg-panel{
+  background:white;border-radius:20px;
+  border:1px solid var(--border);
+  box-shadow:0 8px 48px rgba(39,114,160,0.14),0 2px 12px rgba(0,0,0,0.07);
+  padding:32px 36px;width:100%;max-width:520px;
+}
+.reg-step{display:none;}
+.reg-step.show{display:block;animation:fadeUp .3s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.step-head{margin-bottom:24px;}
+.step-head h2{font-family:'Sora',sans-serif;font-size:20px;font-weight:800;color:var(--text);margin-bottom:5px;}
+.step-head p{font-size:13.5px;color:var(--muted);}
+
+/* ── FORM ── */
+.ff{margin-bottom:14px;}
+.ff label{display:block;font-size:12.5px;font-weight:600;color:var(--text2);margin-bottom:6px;}
+.ff label .req{color:var(--red);}
+.ib{display:flex;align-items:center;background:var(--sky3);border:1.5px solid var(--border);border-radius:11px;overflow:hidden;transition:all .2s;}
+.ib:focus-within{border-color:var(--ocean);background:white;box-shadow:0 0 0 3px rgba(39,114,160,0.09);}
+.ib.err{border-color:var(--red);}
+.ib .ii{padding:0 12px;color:var(--muted);display:flex;align-items:center;flex-shrink:0;}
+.ib .ii svg{width:16px;height:16px;}
+.ib input,.ib select,.ib textarea{flex:1;border:none;background:none;outline:none;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--text);padding:11px 12px 11px 0;min-width:0;}
+.ib input::placeholder,.ib textarea::placeholder{color:#9bb9cc;}
+.ib select{cursor:pointer;}
+.ib .eye-btn{background:none;border:none;padding:0 12px;cursor:pointer;color:var(--muted);display:flex;align-items:center;}
+.ib .eye-btn svg{width:17px;height:17px;}
+.ff-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+
+/* Contact type picker */
+.ctype-pick{display:flex;gap:8px;margin-bottom:14px;}
+.ctpill{flex:1;padding:9px;border:1.5px solid var(--border);border-radius:10px;background:white;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:var(--text2);cursor:pointer;text-align:center;transition:all .2s;}
+.ctpill.on{border-color:var(--ocean);background:rgba(39,114,160,0.05);color:var(--ocean);}
+
+/* OTP send row */
+.otp-row{display:flex;gap:8px;align-items:center;}
+.otp-row .ib{flex:1;}
+.send-btn{
+  height:44px;padding:0 16px;background:var(--ocean);color:white;
+  border:none;border-radius:11px;font-family:'DM Sans',sans-serif;
+  font-size:12.5px;font-weight:600;cursor:pointer;white-space:nowrap;
+  transition:all .2s;flex-shrink:0;
+}
+.send-btn:hover{background:var(--ocean-d);}
+.send-btn:disabled{background:var(--muted);cursor:not-allowed;}
+.otp-timer{font-size:11.5px;color:var(--muted);margin-top:5px;}
+
+/* OTP boxes */
+.otp-boxes{display:flex;gap:10px;justify-content:center;margin:6px 0;}
+.otp-box{
+  width:46px;height:52px;border:2px solid var(--border);border-radius:10px;
+  text-align:center;font-family:'Sora',sans-serif;font-size:22px;font-weight:700;
+  color:var(--text);background:var(--sky3);outline:none;
+  transition:all .2s;
+}
+.otp-box:focus{border-color:var(--ocean);background:white;box-shadow:0 0 0 3px rgba(39,114,160,0.09);}
+.otp-box.filled{border-color:var(--ocean);background:rgba(39,114,160,0.05);}
+.otp-verified{
+  display:none;align-items:center;gap:8px;padding:10px 14px;
+  background:var(--green2);border:1px solid rgba(26,158,92,0.25);
+  border-radius:10px;font-size:13px;font-weight:600;color:var(--green);
+}
+.otp-verified.show{display:flex;}
+.otp-verified svg{width:16px;height:16px;}
+
+/* Location */
+.loc-row{display:flex;gap:8px;}
+.loc-row .ib{flex:1;}
+.loc-btn{
+  height:44px;padding:0 14px;background:rgba(39,114,160,0.08);color:var(--ocean);
+  border:1.5px solid rgba(39,114,160,0.2);border-radius:11px;
+  font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;
+  cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s;
+}
+.loc-btn:hover{background:rgba(39,114,160,0.12);}
+
+/* Password strength */
+.pw-strength{margin-top:5px;}
+.pw-bar{height:4px;border-radius:2px;background:var(--border);overflow:hidden;margin-bottom:3px;}
+.pw-fill{height:100%;border-radius:2px;transition:all .4s;width:0;}
+.pw-label{font-size:11px;color:var(--muted);}
+
+/* Profile avatar picker */
+.avatar-pick{display:flex;align-items:center;gap:16px;margin-bottom:18px;}
+.av-preview{
+  width:56px;height:56px;border-radius:50%;
+  background:var(--ocean);color:white;
+  font-family:'Sora',sans-serif;font-size:22px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.av-info{font-size:12px;color:var(--muted);line-height:1.5;}
+.av-info strong{display:block;font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+
+/* Terms */
+.terms-check{display:flex;align-items:flex-start;gap:10px;margin-bottom:18px;}
+.terms-check input{margin-top:2px;accent-color:var(--ocean);cursor:pointer;flex-shrink:0;}
+.terms-check label{font-size:12.5px;color:var(--text2);cursor:pointer;line-height:1.5;}
+.terms-check label a{color:var(--ocean);}
+
+/* Buttons */
+.btn-next{
+  width:100%;padding:13px;
+  background:linear-gradient(135deg,var(--ocean-d),var(--ocean));
+  color:white;border:none;border-radius:11px;
+  font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;
+  cursor:pointer;box-shadow:0 4px 16px rgba(39,114,160,0.28);
+  transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-next:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(39,114,160,0.34);}
+.btn-next .spinner{width:18px;height:18px;border:2.5px solid rgba(255,255,255,0.3);border-top-color:white;border-radius:50%;animation:spin .7s linear infinite;display:none;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.btn-next.loading .spinner{display:block;}
+.btn-next.loading .btxt{display:none;}
+.btn-back{
+  background:none;border:1.5px solid var(--border);border-radius:11px;
+  padding:12px 24px;font-family:'DM Sans',sans-serif;font-size:14px;
+  font-weight:600;color:var(--text2);cursor:pointer;transition:all .2s;
+}
+.btn-back:hover{background:var(--sky3);}
+.btn-row{display:flex;gap:12px;margin-top:8px;}
+.btn-row .btn-next{flex:1;}
+
+/* ── SUCCESS SCREEN ── */
+.success-wrap{text-align:center;padding:20px 0;}
+.success-anim{
+  width:80px;height:80px;border-radius:50%;
+  background:var(--green2);border:3px solid var(--green);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;font-size:36px;
+  animation:popIn .5s cubic-bezier(.16,1,.3,1);
+}
+@keyframes popIn{from{transform:scale(0);}to{transform:scale(1);}}
+.success-wrap h2{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;color:var(--text);margin-bottom:8px;}
+.success-wrap p{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:24px;}
+
+/* ── PROGRESS ── */
+.reg-progress{height:3px;background:var(--border);border-radius:0 0 20px 20px;margin:-32px -36px 28px;overflow:hidden;}
+.reg-progress-fill{height:100%;background:linear-gradient(90deg,var(--ocean-d),var(--ocean));border-radius:0 0 20px 20px;transition:width .4s ease;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:560px){
+  .reg-panel{padding:24px 20px;border-radius:16px;}
+  .ff-row2{grid-template-columns:1fr;}
+  .steps-bar{gap:0;overflow-x:auto;}
+  .step-label{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- Nav -->
+<nav class="mini-nav">
+  <a class="nav-logo" href="index.html">
+    <div class="logo-box" style="background:var(--ocean);border-radius:10px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;">
+        <svg viewBox="0 0 44 44" fill="none" style="width:25px;height:25px">
+          <defs><linearGradient id="rgN" x1="4" y1="40" x2="40" y2="4" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="rgba(255,255,255,0.65)"/><stop offset="100%" stop-color="white"/>
+          </linearGradient></defs>
+          <line x1="8" y1="36" x2="8" y2="8" stroke="url(#rgN)" stroke-width="7" stroke-linecap="round"/>
+          <line x1="8" y1="8" x2="36" y2="36" stroke="url(#rgN)" stroke-width="7" stroke-linecap="round"/>
+          <line x1="36" y1="36" x2="36" y2="14" stroke="url(#rgN)" stroke-width="7" stroke-linecap="round"/>
+          <circle cx="36" cy="9" r="6" fill="white"/>
+          <circle cx="36" cy="9" r="2.5" fill="var(--ocean)"/>
+        </svg>
+      </div>
+    <span class="logo-nm">NearNeed</span>
+  </a>
+  <div class="mini-nav-right">Already have an account? <a href="login.html">Sign In →</a></div>
+</nav>
+
+<!-- Steps Bar -->
+<div class="steps-bar">
+  <div class="step active" id="step1-ind">
+    <div class="step-circle" id="sc1">1</div>
+    <span class="step-label">Contact</span>
+  </div>
+  <div class="step-line" id="line1"></div>
+  <div class="step" id="step2-ind">
+    <div class="step-circle" id="sc2">2</div>
+    <span class="step-label">Verify OTP</span>
+  </div>
+  <div class="step-line" id="line2"></div>
+  <div class="step" id="step3-ind">
+    <div class="step-circle" id="sc3">3</div>
+    <span class="step-label">Profile</span>
+  </div>
+  <div class="step-line" id="line3"></div>
+  <div class="step" id="step4-ind">
+    <div class="step-circle" id="sc4">4</div>
+    <span class="step-label">Aadhaar</span>
+  </div>
+  <div class="step-line" id="line4"></div>
+  <div class="step" id="step5-ind">
+    <div class="step-circle" id="sc5">5</div>
+    <span class="step-label">Location</span>
+  </div>
+  <div class="step-line" id="line5"></div>
+  <div class="step" id="step6-ind">
+    <div class="step-circle" id="sc6">6</div>
+    <span class="step-label">Done!</span>
+  </div>
+</div>
+
+<!-- Registration Panel -->
+<div class="reg-wrap">
+  <div class="reg-panel">
+
+    <!-- Progress bar -->
+    <div class="reg-progress"><div class="reg-progress-fill" id="regProgress" style="width:20%"></div></div>
+
+    <!-- ─ STEP 1: Contact ─ -->
+    <div class="reg-step show" id="step1">
+      <div class="step-head">
+        <h2>📱 Create Your Account</h2>
+        <p>Join your neighborhood community — it's completely free.</p>
+      </div>
+
+      <div class="ff">
+        <label>Full Name <span class="req">*</span></label>
+        <div class="ib">
+          <div class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <input type="text" id="fullName" placeholder="Rahul Sharma" autocomplete="name" oninput="updatePreview()"/>
+        </div>
+      </div>
+
+      <div class="ff">
+        <label>Register With <span class="req">*</span></label>
+        <div class="ctype-pick">
+          <button class="ctpill on" onclick="pickCType('email',this)">📧 Email Address</button>
+          <button class="ctpill" onclick="pickCType('phone',this)">📱 Mobile Number</button>
+        </div>
+        <div class="ib" id="contactWrap">
+          <div class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg></div>
+          <input type="email" id="contactVal" placeholder="your@email.com" autocomplete="email"/>
+        </div>
+      </div>
+
+      <div class="ff">
+        <label>Password <span class="req">*</span></label>
+        <div class="ib">
+          <div class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <input type="password" id="pw1" placeholder="Min. 8 characters" oninput="checkPW()"/>
+          <button class="eye-btn" onclick="togglePW('pw1')" type="button"><svg id="eye1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="17" height="17"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+        <div class="pw-strength">
+          <div class="pw-bar"><div class="pw-fill" id="pwFill"></div></div>
+          <div class="pw-label" id="pwLabel">Enter a strong password</div>
+        </div>
+      </div>
+
+      <div class="ff">
+        <label>Confirm Password <span class="req">*</span></label>
+        <div class="ib">
+          <div class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+          <input type="password" id="pw2" placeholder="Re-enter password"/>
+        </div>
+      </div>
+
+      <button class="btn-next" onclick="goStep2()"><span class="btxt">Continue →</span></button>
+      <div style="text-align:center;margin-top:16px;font-size:12.5px;color:var(--muted)">Already have an account? <a href="login.html" style="color:var(--ocean);font-weight:600">Sign In</a></div>
+    </div>
+
+    <!-- ─ STEP 2: OTP Verify ─ -->
+    <div class="reg-step" id="step2">
+      <div class="step-head">
+        <h2>🔐 Verify Your Contact</h2>
+        <p id="otpDesc">We sent a 6-digit OTP to your email</p>
+      </div>
+
+      <div class="ff">
+        <div class="otp-row">
+          <div class="ib"><div class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg></div><input type="email" id="contactDisplay" readonly style="color:var(--muted)"/></div>
+          <button class="send-btn" id="sendOTPBtn2" onclick="sendRegOTP()">Send OTP</button>
+        </div>
+      </div>
+
+      <div id="otpEntry" style="display:none">
+        <label style="font-size:12.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:10px;text-align:center">Enter 6-digit OTP</label>
+        <div class="otp-boxes">
+          <input class="otp-box" maxlength="1" id="ob0" oninput="otpNav(this,0)"/>
+          <input class="otp-box" maxlength="1" id="ob1" oninput="otpNav(this,1)"/>
+          <input class="otp-box" maxlength="1" id="ob2" oninput="otpNav(this,2)"/>
+          <input class="otp-box" maxlength="1" id="ob3" oninput="otpNav(this,3)"/>
+          <input class="otp-box" maxlength="1" id="ob4" oninput="otpNav(this,4)"/>
+          <input class="otp-box" maxlength="1" id="ob5" oninput="otpNav(this,5)"/>
+        </div>
+        <div class="otp-timer" id="otpTimer2" style="text-align:center;margin-top:8px;font-size:12px;color:var(--muted)"></div>
+      </div>
+
+      <div class="otp-verified" id="otpVerifiedMsg">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        Contact verified successfully!
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goStepN(1)">← Back</button>
+        <button class="btn-next" id="verifyBtn" onclick="verifyRegOTP()"><span class="btxt">Verify & Continue →</span></button>
+      </div>
+    </div>
+
+    <!-- ─ STEP 3: Profile ─ -->
+    <div class="reg-step" id="step3">
+      <div class="step-head">
+        <h2>👤 Complete Your Profile</h2>
+        <p>Help neighbors know a little about you.</p>
+      </div>
+
+      <div class="avatar-pick">
+        <div class="av-preview" id="avPreview">R</div>
+        <div class="av-info"><strong id="avName">Rahul Sharma</strong>Your profile picture uses initials</div>
+      </div>
+
+      <div class="ff-row2">
+        <div class="ff">
+          <label>Gender</label>
+          <div class="ib"><div class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg></div><select id="gender"><option value="">Select…</option><option>Male</option><option>Female</option><option>Non-binary</option><option>Prefer not to say</option></select></div>
+        </div>
+        <div class="ff">
+          <label>Age Group</label>
+          <div class="ib"><div class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div><select id="ageGroup"><option value="">Select…</option><option>Under 18</option><option>18-25</option><option>26-35</option><option>36-50</option><option>50+</option></select></div>
+        </div>
+      </div>
+
+      <div class="ff">
+        <label>Profession / Job <span style="font-size:11px;color:var(--muted);font-weight:400">(optional — used to match relevant task alerts)</span></label>
+        <div class="ib">
+          <div class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg></div>
+          <select id="profession">
+            <option value="">Select your profession…</option>
+            <option value="Doctor">🩺 Doctor / Healthcare</option>
+            <option value="Nurse">💉 Nurse / Paramedic</option>
+            <option value="Engineer">🔧 Engineer / Technician</option>
+            <option value="Electrician">⚡ Electrician</option>
+            <option value="Plumber">🔩 Plumber</option>
+            <option value="Carpenter">🪚 Carpenter</option>
+            <option value="Teacher">📚 Teacher / Tutor</option>
+            <option value="Driver">🚗 Driver / Delivery</option>
+            <option value="Cook">🍳 Cook / Chef</option>
+            <option value="IT Professional">💻 IT Professional</option>
+            <option value="Lawyer">⚖️ Lawyer</option>
+            <option value="Accountant">🧾 Accountant / Finance</option>
+            <option value="Fitness Trainer">🏋️ Fitness Trainer</option>
+            <option value="Caregiver">🧓 Caregiver / Social Worker</option>
+            <option value="Student">🎓 Student</option>
+            <option value="Retired">🌅 Retired</option>
+            <option value="Other">🙋 Other</option>
+          </select>
+        </div>
+        <div style="font-size:11.5px;color:var(--muted);margin-top:5px">You'll get inbox &amp; email alerts for tasks matching your skills — e.g. doctors get Medical alerts.</div>
+      </div>
+
+      <div class="ff">
+        <label>Bio <span style="font-size:11px;color:var(--muted);font-weight:400">(optional)</span></label>
+        <div class="ib"><textarea id="bio" placeholder="Tell neighbors about yourself in a sentence…" style="min-height:65px"></textarea></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goStepN(2)">← Back</button>
+        <button class="btn-next" onclick="goStepN(4)"><span class="btxt">Continue →</span></button>
+      </div>
+    </div>
+
+    <!-- ─ STEP 4: Aadhaar Verification ─ -->
+    <div class="reg-step" id="step4">
+      <div class="step-head">
+        <h2>🪪 Aadhaar Verification</h2>
+        <p>Verify your identity to build trust in the community. <span style="color:var(--ocean);font-weight:600">(Optional but recommended)</span></p>
+      </div>
+
+      <!-- Aadhaar info banner -->
+      <div style="background:rgba(39,114,160,0.07);border:1.5px solid rgba(39,114,160,0.18);border-radius:11px;padding:13px 16px;margin-bottom:16px;display:flex;gap:11px;align-items:flex-start">
+        <div style="font-size:22px;flex-shrink:0">🛡️</div>
+        <div>
+          <div style="font-size:13px;font-weight:700;color:var(--ocean);margin-bottom:3px">Why verify with Aadhaar?</div>
+          <div style="font-size:12.5px;color:var(--text2);line-height:1.5">Your Aadhaar number is never stored — only the last 4 digits are saved. Verified accounts get a ✅ badge and are trusted more by neighbors.</div>
+        </div>
+      </div>
+
+      <div class="ff">
+        <label>Aadhaar Number <span style="font-size:11px;color:var(--muted);font-weight:400">(12 digits)</span></label>
+        <div class="ib" id="aadhaarWrap">
+          <div class="ii">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/>
+            </svg>
+          </div>
+          <input type="text" id="aadhaarNum" placeholder="XXXX XXXX XXXX" maxlength="14"
+                 oninput="fmtAadhaar(this)" style="letter-spacing:2px"/>
+        </div>
+      </div>
+
+      <div class="ff" id="aadhaarOTPSection" style="display:none">
+        <div class="otp-row">
+          <div class="ib"><div class="ii">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,12 2,6"/>
+            </svg>
+          </div><input type="text" id="aadhaarContact" readonly style="color:var(--muted);font-size:13px"/></div>
+          <button class="send-btn" id="sendAadhaarOTPBtn" onclick="sendAadhaarOTP()">Send OTP</button>
+        </div>
+
+        <div id="aadhaarOTPEntry" style="display:none;margin-top:12px">
+          <label style="font-size:12.5px;font-weight:600;color:var(--text2);display:block;margin-bottom:10px;text-align:center">Enter Aadhaar OTP</label>
+          <div class="otp-boxes">
+            <input class="otp-box" maxlength="1" id="aob0" oninput="aOtpNav(this,0)"/>
+            <input class="otp-box" maxlength="1" id="aob1" oninput="aOtpNav(this,1)"/>
+            <input class="otp-box" maxlength="1" id="aob2" oninput="aOtpNav(this,2)"/>
+            <input class="otp-box" maxlength="1" id="aob3" oninput="aOtpNav(this,3)"/>
+            <input class="otp-box" maxlength="1" id="aob4" oninput="aOtpNav(this,4)"/>
+            <input class="otp-box" maxlength="1" id="aob5" oninput="aOtpNav(this,5)"/>
+          </div>
+          <div style="text-align:center;margin-top:8px">
+            <button class="send-btn" onclick="verifyAadhaarOTP()" style="background:var(--green)">✓ Verify Aadhaar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="otp-verified" id="aadhaarVerifiedMsg">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        ✅ Aadhaar verified! Your account will show a verified badge.
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goStepN(3)">← Back</button>
+        <button class="btn-next" id="aadhaarSkipBtn" onclick="goStepN(5)" style="background:var(--muted)">
+          <span>Skip for now →</span>
+        </button>
+        <button class="btn-next" id="aadhaarNextBtn" onclick="initAadhaarVerify()" style="display:none">
+          <span>Verify & Continue →</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ─ STEP 5: Location ─ -->
+    <div class="reg-step" id="step5">
+      <div class="step-head">
+        <h2>📍 Set Your Location</h2>
+        <p>This lets us show you requests from neighbors within 1km.</p>
+      </div>
+
+      <div class="ff">
+        <label>House/Flat & Street <span class="req">*</span></label>
+        <div class="ib"><div class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><input type="text" id="street" placeholder="e.g. Flat 302, Shanti Apartments"/></div>
+      </div>
+
+      <div class="ff-row2">
+        <div class="ff">
+          <label>City <span class="req">*</span></label>
+          <div class="ib"><div class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div><input type="text" id="city" placeholder="Mumbai"/></div>
+        </div>
+        <div class="ff">
+          <label>PIN Code <span class="req">*</span></label>
+          <div class="ib"><div class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div><input type="text" id="pincode" placeholder="400001" maxlength="6"/></div>
+        </div>
+      </div>
+
+      <div class="ff">
+        <label>State</label>
+        <div class="ib"><div class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/><path d="M12 2a14.5 14.5 0 0 1 0 20 14.5 14.5 0 0 1 0-20"/><line x1="2" y1="12" x2="22" y2="12"/></svg></div><select id="state"><option value="">Select State…</option><option>Andhra Pradesh</option><option>Delhi</option><option>Goa</option><option>Gujarat</option><option>Karnataka</option><option>Kerala</option><option>Maharashtra</option><option>Rajasthan</option><option>Tamil Nadu</option><option>Telangana</option><option>Uttar Pradesh</option><option>West Bengal</option><option>Other</option></select></div>
+      </div>
+
+      <div class="ff">
+        <label>📍 Auto-Detect Location (GPS)</label>
+        <div class="loc-row">
+          <div class="ib"><div class="ii"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg></div><input type="text" id="gpsCoords" placeholder="GPS coordinates will appear here" readonly style="color:var(--muted)"/></div>
+          <button class="loc-btn" onclick="detectGPS()">📡 Detect GPS</button>
+        </div>
+        <div style="font-size:11.5px;color:var(--muted);margin-top:5px">Used for showing nearby requests within 1km radius</div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn-back" onclick="goStepN(4)">← Back</button>
+        <button class="btn-next" id="finalBtn" onclick="submitReg()">
+          <div class="spinner" id="finalSpinner"></div>
+          <span class="btxt">Create Account 🎉</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ─ STEP 6: Success ─ -->
+    <div class="reg-step" id="step6">
+      <div class="success-wrap">
+        <div class="success-anim">🎉</div>
+        <h2>Welcome to the Neighborhood!</h2>
+        <p id="successMsg">Your account has been created. You're now connected to your community.</p>
+        <a href="dashboard.html" class="btn-next" style="text-decoration:none;display:flex;justify-content:center;gap:8px">
+          🏘️ Go to Dashboard →
+        </a>
+        <div style="margin-top:16px;font-size:13px;color:var(--muted)">
+          Your neighbors are waiting! <a href="dashboard.html" style="color:var(--ocean);font-weight:600">Explore now →</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- reg-panel -->
+</div><!-- reg-wrap -->
+
+<div id="toastRoot"></div>
+
+<!-- Core Application Logic -->
+<script src="app.js"></script>
+<script>
+// Redirect if already logged in
+Auth.redirect();
+
+const OTP_STORE = {};
+function generateOTP() { return String(Math.floor(100000 + Math.random() * 900000)); }
+// ── State ──────────────────────────────────────────────
+let cStep = 1;
+let cType = 'email';
+let regData = {};
+let regOTP = '';
+let regOTPVerified = false;
+let otpTimerInt2 = null;
+const MAX_STEP = 6;
+
+// Redirect if logged in
+Auth.redirect();
+
+// ── Step Navigation ────────────────────────────────────
+function goStepN(n) {
+  document.getElementById('step'+cStep).classList.remove('show');
+  cStep = n;
+  document.getElementById('step'+n).classList.add('show');
+  updateStepUI();
+}
+
+function updateStepUI() {
+  const pct = [0,17,33,50,67,83,100][cStep] ?? 100;
+  document.getElementById('regProgress').style.width = pct + '%';
+  for (let i = 1; i <= MAX_STEP; i++) {
+    const ind  = document.getElementById(`step${i}-ind`);
+    const sc   = document.getElementById(`sc${i}`);
+    const line = document.getElementById(`line${i}`);
+    if (ind)  ind.className  = 'step ' + (i < cStep ? 'done' : i === cStep ? 'active' : '');
+    if (sc)   sc.textContent = i < cStep ? '✓' : i;
+    if (line) line.className = 'step-line' + (i < cStep ? ' done' : '');
+  }
+  window.scrollTo(0, 0);
+}
+
+// ── STEP 1: Validate & go to 2 ──────────────────────────
+function goStep2() {
+  const name    = document.getElementById('fullName').value.trim();
+  const contact = document.getElementById('contactVal').value.trim();
+  const p1      = document.getElementById('pw1').value;
+  const p2      = document.getElementById('pw2').value;
+
+  if (!name)    { showToast('Please enter your full name','warn'); return; }
+  if (!contact) { showToast('Please enter your ' + (cType==='email'?'email':'phone number'),'warn'); return; }
+  if (cType==='email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contact)) { showToast('Enter a valid email address','warn'); return; }
+  if (cType==='phone' && !/^\d{10}$/.test(contact)) { showToast('Enter a valid 10-digit phone number','warn'); return; }
+  if (p1.length < 8) { showToast('Password must be at least 8 characters','warn'); return; }
+  // Block weak passwords (score must reach "Good" = 3)
+  let pwScore = 0;
+  if (p1.length >= 8)           pwScore++;
+  if (/[A-Z]/.test(p1))        pwScore++;
+  if (/[0-9]/.test(p1))        pwScore++;
+  if (/[^A-Za-z0-9]/.test(p1)) pwScore++;
+  if (pwScore < 3) {
+    showToast('🔒 Password too weak — add uppercase letters, numbers, or symbols','warn');
+    document.getElementById('pw1').closest('.ib').classList.add('err');
+    document.getElementById('pwLabel').textContent = '⚠️ Too weak to proceed';
+    document.getElementById('pwLabel').style.color = '#d63131';
+    return;
+  }
+  if (p1 !== p2) { showToast('Passwords do not match','warn'); return; }
+
+  regData = { name, contact, contactType: cType, password: p1 };
+  document.getElementById('contactDisplay').value = contact;
+  document.getElementById('otpDesc').textContent = `We'll send a 6-digit OTP to ${cType==='email'?'your email':'your mobile'}`;
+  goStepN(2);
+}
+
+// ── Contact type ───────────────────────────────────────
+function pickCType(type, btn) {
+  cType = type;
+  document.querySelectorAll('.ctpill').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  const input = document.getElementById('contactVal');
+  const ii    = document.getElementById('contactWrap').querySelector('.ii');
+  if (type==='email') {
+    input.type='email'; input.placeholder='your@email.com'; input.autocomplete='email';
+    ii.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>`;
+  } else {
+    input.type='tel'; input.placeholder='9876543210'; input.autocomplete='tel';
+    ii.innerHTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72"/></svg>`;
+  }
+  input.value='';
+}
+
+// ── Step 2: OTP ────────────────────────────────────────
+async function sendRegOTP() {
+  const contact = regData.contact;
+  const btn = document.getElementById('sendOTPBtn2');
+  btn.disabled = true; btn.textContent = 'Sending…';
+
+  // #region agent log
+  try{
+    fetch('http://127.0.0.1:7647/ingest/447bc6dd-e55a-445c-95da-184ab52ac58d',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'b2e4a7'},body:JSON.stringify({sessionId:'b2e4a7',runId:(window.__NN_RUN_ID||'pre-fix'),hypothesisId:'R1',location:'Frontend/register.html:sendRegOTP:start',message:'Send OTP clicked',data:{hasContact:!!contact,contactType:cType,btnDisabled:btn.disabled},timestamp:Date.now()})}).catch(()=>{});
+  }catch{}
+  // #endregion
+
+  let res;
+  try{
+    res = await apiCall('/send-otp', { contact, type: cType, purpose: 'register' });
+  }catch(e){
+    // #region agent log
+    try{
+      fetch('http://127.0.0.1:7647/ingest/447bc6dd-e55a-445c-95da-184ab52ac58d',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'b2e4a7'},body:JSON.stringify({sessionId:'b2e4a7',runId:(window.__NN_RUN_ID||'pre-fix'),hypothesisId:'R2',location:'Frontend/register.html:sendRegOTP:apiCallThrow',message:'apiCall threw',data:{msg:String(e&&e.message||e)},timestamp:Date.now()})}).catch(()=>{});
+    }catch{}
+    // #endregion
+    res = { error: 'offline', offline: true };
+  }
+
+  // #region agent log
+  try{
+    fetch('http://127.0.0.1:7647/ingest/447bc6dd-e55a-445c-95da-184ab52ac58d',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'b2e4a7'},body:JSON.stringify({sessionId:'b2e4a7',runId:(window.__NN_RUN_ID||'pre-fix'),hypothesisId:'R3',location:'Frontend/register.html:sendRegOTP:afterApiCall',message:'apiCall returned',data:{hasRes:!!res,offline:!!(res&&res.offline),hasError:!!(res&&res.error),status:res&&res.status,nonJson:!!(res&&res.nonJson)},timestamp:Date.now()})}).catch(()=>{});
+  }catch{}
+  // #endregion
+
+  btn.textContent = 'Resend';
+
+  if (res.error && !res.offline) {
+    // Backend is up but returned a real error (e.g. rate-limited)
+    showToast(res.error, 'error');
+    btn.disabled = false;
+    return;
+  }
+
+  if (res.offline) {
+    // Backend unreachable — generate a local demo OTP so the flow can continue
+    regOTP = generateOTP();
+    OTP_STORE[contact] = regOTP;
+    showToast(`[Offline] Demo OTP: ${regOTP}`, 'warn');
+  } else {
+    // Backend running — OTP was stored in the DB
+    // In DEV_MODE the server echoes it back; store it so local verify still works
+    if (res.dev_otp) {
+      OTP_STORE[contact] = res.dev_otp;
+      showToast(`[DEV] OTP: ${res.dev_otp}`, 'warn');
+    } else {
+      showToast(`OTP sent to your ${cType === 'email' ? 'email' : 'phone'}!`, 'success');
+    }
+  }
+
+  // #region agent log
+  try{
+    const otpEntry = document.getElementById('otpEntry');
+    fetch('http://127.0.0.1:7647/ingest/447bc6dd-e55a-445c-95da-184ab52ac58d',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'b2e4a7'},body:JSON.stringify({sessionId:'b2e4a7',runId:(window.__NN_RUN_ID||'pre-fix'),hypothesisId:'R4',location:'Frontend/register.html:sendRegOTP:beforeShowBoxes',message:'About to show OTP boxes',data:{otpEntryExists:!!otpEntry,otpEntryDisplay:otpEntry&&otpEntry.style&&otpEntry.style.display},timestamp:Date.now()})}).catch(()=>{});
+  }catch{}
+  // #endregion
+
+  document.getElementById('otpEntry').style.display = 'block';
+  document.getElementById('ob0').focus();
+  startRegTimer(60);
+}
+
+function startRegTimer(s) {
+  const el = document.getElementById('otpTimer2');
+  clearInterval(otpTimerInt2);
+  otpTimerInt2 = setInterval(() => {
+    s--;
+    el.textContent = `Resend in ${s}s`;
+    if (s<=0) { clearInterval(otpTimerInt2); document.getElementById('sendOTPBtn2').disabled=false; el.textContent=''; }
+  }, 1000);
+}
+
+function otpNav(input, idx) {
+  input.classList.toggle('filled', input.value.length>0);
+  if (input.value.length===1 && idx<5) document.getElementById(`ob${idx+1}`).focus();
+  checkAutoVerify();
+}
+
+function checkAutoVerify() {
+  const otp = [0,1,2,3,4,5].map(i=>document.getElementById(`ob${i}`).value).join('');
+  if (otp.length===6) verifyRegOTP();
+}
+
+async function verifyRegOTP() {
+  const entered = [0,1,2,3,4,5].map(i=>document.getElementById(`ob${i}`).value).join('');
+  if (entered.length<6) { showToast('Enter all 6 digits','warn'); return; }
+
+  const contact = regData.contact;
+  const btn = document.getElementById('verifyBtn');
+  btn.classList.add('loading'); btn.disabled=true;
+
+  const res = await apiCall('/verify-otp', { contact, otp: entered, purpose: 'register' });
+  const valid = (OTP_STORE[contact]===entered) || res.success;
+
+  btn.classList.remove('loading'); btn.disabled=false;
+
+  if (valid) {
+    regOTPVerified = true;
+    document.getElementById('otpVerifiedMsg').classList.add('show');
+    document.getElementById('otpEntry').style.opacity='0.5';
+    showToast('✅ Contact verified!','success');
+    setTimeout(()=>goStepN(3), 800);
+  } else {
+    showToast('Invalid OTP. Check and try again.','error');
+    [0,1,2,3,4,5].forEach(i=>{ const b=document.getElementById(`ob${i}`); b.value=''; b.classList.remove('filled'); });
+    document.getElementById('ob0').focus();
+  }
+}
+
+// ── Step 3: Profile ────────────────────────────────────
+function updatePreview() {
+  const name = document.getElementById('fullName').value.trim();
+  const initials = name.split(' ').map(w=>w[0]).filter(Boolean).join('').toUpperCase().slice(0,2) || 'U';
+  document.getElementById('avPreview').textContent = initials;
+  document.getElementById('avName').textContent = name || 'Your Name';
+  if (regData) regData.name = name;
+}
+
+// ── Step 4: Location & GPS ─────────────────────────────
+function detectGPS() {
+  if (!navigator.geolocation) { showToast('Geolocation not supported','warn'); return; }
+  showToast('📡 Detecting GPS…','info');
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      regData.lat = pos.coords.latitude;
+      regData.lng = pos.coords.longitude;
+      document.getElementById('gpsCoords').value = `${pos.coords.latitude.toFixed(5)}, ${pos.coords.longitude.toFixed(5)}`;
+      // Try to fill city from coords
+      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json`)
+        .then(r=>r.json()).then(d=>{
+          const a = d.address||{};
+          if (!document.getElementById('city').value) document.getElementById('city').value = a.city||a.town||a.county||'';
+          if (!document.getElementById('pincode').value) document.getElementById('pincode').value = a.postcode||'';
+          if (!document.getElementById('street').value) document.getElementById('street').value = [a.house_number,a.road].filter(Boolean).join(', ')||'';
+          const stateMap={'Maharashtra':'Maharashtra','Karnataka':'Karnataka','Delhi':'Delhi','Tamil Nadu':'Tamil Nadu'};
+          const stateEl=document.getElementById('state');
+          const stateName=a.state||'';
+          for(let opt of stateEl.options){if(opt.value===stateName){stateEl.value=stateName;break;}}
+          showToast('📍 Location auto-filled!','success');
+        }).catch(()=>showToast('📍 GPS coordinates captured','success'));
+    },
+    () => showToast('GPS access denied. Please fill address manually.','warn')
+  );
+}
+
+// ── Final Submit ───────────────────────────────────────
+async function submitReg() {
+  const city    = document.getElementById('city').value.trim();
+  const pincode = document.getElementById('pincode').value.trim();
+  const street  = document.getElementById('street').value.trim();
+
+  if (!city)    { showToast('Please enter your city','warn'); return; }
+  if (!pincode || !/^\d{6}$/.test(pincode)) { showToast('Enter a valid 6-digit PIN code','warn'); return; }
+
+  const btn = document.getElementById('finalBtn');
+  btn.disabled=true; document.getElementById('finalSpinner').style.display='block'; btn.querySelector('.btxt').style.display='none';
+
+  const payload = {
+    ...regData,
+    street, city, pincode,
+    aadhaar: regData.aadhaar || '',
+    aadhaar_otp_verified: regData.aadhaar_otp_verified || false,
+    state: document.getElementById('state').value,
+    gender: document.getElementById('gender').value,
+    age_group: document.getElementById('ageGroup').value,
+    bio: document.getElementById('bio').value,
+    profession: document.getElementById('profession').value,
+    lat: regData.lat||19.0760, lng: regData.lng||72.8777,
+    otp: [0,1,2,3,4,5].map(i=>document.getElementById(`ob${i}`).value||'').join('')
+  };
+
+  const res = await apiCall('/register', payload);
+
+  // ── Re-enable button on any failure ──────────────────
+  const resetBtn = () => {
+    btn.disabled = false;
+    document.getElementById('finalSpinner').style.display = 'none';
+    btn.querySelector('.btxt').style.display = '';
+  };
+
+  // Backend returned a real error (e.g. email already taken, validation failed)
+  if (res.error && !res.offline) {
+    resetBtn();
+    showToast(res.error, 'error');
+    return;
+  }
+
+  let savedUser;
+  if (res && res.user) {
+    // Happy path — account was created in the database
+    savedUser = { ...res.user, token: res.user.token || res.token || '' };
+    Auth.save(savedUser);
+  } else if (res.offline) {
+    // Backend is completely unreachable — create a local-only temporary session
+    showToast('Backend offline. Your account will sync when the server is back.', 'warn');
+    savedUser = { id:Date.now(), name:regData.name, email:cType==='email'?regData.contact:'',
+                  phone:cType==='phone'?regData.contact:'', city, pincode,
+                  lat:payload.lat, lng:payload.lng, is_admin:false, token:'' };
+    Auth.save(savedUser);
+  } else {
+    // Unexpected response shape — treat as failure
+    resetBtn();
+    showToast('Unexpected server response. Please try again.', 'error');
+    return;
+  }
+
+  document.getElementById('successMsg').innerHTML = `Your account has been created, <strong>${regData.name}!</strong><br>You're now connected to your neighborhood community.<br><br>Find neighbors, post help requests, and volunteer — all within 1km.`;
+  goStepN(6);
+  showToast('🎉 Welcome to NearNeed!','success');
+}
+
+
+// ── Aadhaar Step ────────────────────────────────────────
+let aadhaarOTPVerified = false;
+
+function fmtAadhaar(inp) {
+  let v = inp.value.replace(/\D/g,'').substring(0,12);
+  inp.value = v.replace(/(\d{4})(?=\d)/g,'$1 ');
+  const rawLen = v.length;
+  const skipBtn = document.getElementById('aadhaarSkipBtn');
+  const nextBtn = document.getElementById('aadhaarNextBtn');
+  if (rawLen === 12) {
+    skipBtn.style.display='none'; nextBtn.style.display='flex';
+    document.getElementById('aadhaarOTPSection').style.display='block';
+    const c = document.getElementById('aadhaarContact');
+    if(c) c.value = regData.contact || '';
+  } else {
+    skipBtn.style.display='flex'; nextBtn.style.display='none';
+    document.getElementById('aadhaarOTPSection').style.display='none';
+  }
+}
+
+function initAadhaarVerify() {
+  // Show OTP section if not shown
+  const sec = document.getElementById('aadhaarOTPSection');
+  if(sec) sec.style.display='block';
+  sendAadhaarOTP();
+}
+
+async function sendAadhaarOTP() {
+  const rawAadhaar = (document.getElementById('aadhaarNum').value||'').replace(/\s/g,'');
+  if(rawAadhaar.length!==12){showToast('Enter a valid 12-digit Aadhaar','warn');return;}
+  const btn = document.getElementById('sendAadhaarOTPBtn');
+  btn.disabled=true; btn.textContent='Sending…';
+  const res = await apiCall('/aadhaar/send-otp',{contact:regData.contact,aadhaar:rawAadhaar});
+  btn.disabled=false; btn.textContent='Resend OTP';
+  if(res.error){showToast(res.error,'error');return;}
+  document.getElementById('aadhaarOTPEntry').style.display='block';
+  showToast('OTP sent to your contact!','success');
+  if(res.dev_otp) showToast(`[DEV] Aadhaar OTP: ${res.dev_otp}`,'warn');
+}
+
+function aOtpNav(inp,i) {
+  inp.classList.toggle('filled',inp.value.length>0);
+  if(inp.value && i<5) document.getElementById(`aob${i+1}`).focus();
+  if(!inp.value && i>0) document.getElementById(`aob${i-1}`).focus();
+}
+
+async function verifyAadhaarOTP() {
+  const otp=[0,1,2,3,4,5].map(i=>document.getElementById(`aob${i}`).value||'').join('');
+  if(otp.length!==6){showToast('Enter the 6-digit OTP','warn');return;}
+  const res = await apiCall('/aadhaar/verify-otp',{contact:regData.contact,otp});
+  if(res.error){showToast(res.error,'error');return;}
+  aadhaarOTPVerified=true;
+  regData.aadhaar=(document.getElementById('aadhaarNum').value||'').replace(/\s/g,'');
+  regData.aadhaar_otp_verified=true;
+  document.getElementById('aadhaarVerifiedMsg').classList.add('show');
+  document.getElementById('aadhaarOTPEntry').style.display='none';
+  document.getElementById('aadhaarOTPSection').style.display='none';
+  document.getElementById('aadhaarSkipBtn').style.display='none';
+  document.getElementById('aadhaarNextBtn').textContent='Continue →';
+  showToast('✅ Aadhaar verified!','success');
+  setTimeout(()=>goStepN(5),800);
+}
+
+// ── Password strength ──────────────────────────────────
+function checkPW() {
+  const pw = document.getElementById('pw1').value;
+  const fill = document.getElementById('pwFill');
+  const label = document.getElementById('pwLabel');
+  const ibWrap = document.getElementById('pw1').closest('.ib');
+  let score=0;
+  if (pw.length>=8) score++;
+  if (/[A-Z]/.test(pw)) score++;
+  if (/[0-9]/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+  const map=[['0%','#d63131','Too short'],['25%','#d63131','Weak — add uppercase, numbers & symbols'],['50%','#f59e0b','Fair — add more variety'],['75%','#1a9e5c','Good ✓'],['100%','#1a9e5c','Strong ✓']];
+  fill.style.width=map[score][0]; fill.style.background=map[score][1]; label.textContent=map[score][2]; label.style.color=map[score][1];
+  // Remove error border once user starts fixing it
+  if (score >= 3) ibWrap.classList.remove('err');
+}
+
+function togglePW(id) {
+  const inp = document.getElementById(id);
+  const eye = document.getElementById('eye1');
+  if (inp.type==='password') { inp.type='text'; eye.innerHTML=`<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`; }
+  else { inp.type='password'; eye.innerHTML=`<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`; }
+}
+</script>
+</body>
+</html>
